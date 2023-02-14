@@ -2,7 +2,7 @@ from config import TG_API_TOKEN
 from notion import getAmountOfCurrencies
 from states.IncomeForm import IncomeForm
 from states.ExpenseForm import ExpenseForm
-from filters.IsIncorrectNumber import IsIncorrectNumber
+from filters.IsCorrectNumber import IsCorrectNumber
 
 import logging
 from aiogram import Bot, Dispatcher, executor, types
@@ -58,14 +58,14 @@ async def process_invalid_currency(message: types.Message):
     await message.reply("Incorrect currency.\nInput currency (available: CZK, RUB, EUR, USD)")
 
 
-@dp.message_handler(state=IncomeForm.amount)
+@dp.message_handler(IsCorrectNumber(), state=IncomeForm.amount)
 async def process_amount(message: types.Message, state: FSMContext):
     await IncomeForm.next()
     await state.update_data(amount=float(message.text))
     await message.reply("Input any comment (optional)")
 
 
-@dp.message_handler(IsIncorrectNumber(), state=IncomeForm.amount)
+@dp.message_handler(state=IncomeForm.amount)
 async def process_incorrect_amount(message: types.Message):
     await message.reply("Incorrect number.\nInput amount of income")
 
@@ -97,8 +97,6 @@ async def process_expense_currency(message: types.Message, state: FSMContext):
     await ExpenseForm.next()
     await state.update_data(currency=message.text)
     await message.reply("Input amount of expense")
-    async with state.proxy() as data:
-        print(data['name'], data['currency'])
 
 
 @dp.message_handler(lambda message: message.text not in ['CZK', 'RUB', 'EUR', 'USD'], state=ExpenseForm.currency)
@@ -106,7 +104,7 @@ async def process_expense_currency_incorrect(message: types.Message):
     await message.reply("Incorrect currency.\nInput currency (available: CZK, RUB, EUR, USD)")
 
 
-@dp.message_handler(state=ExpenseForm.amount)
+@dp.message_handler(IsCorrectNumber(), state=ExpenseForm.amount)
 async def process_expense_amount(message: types.Message, state: FSMContext):
     await ExpenseForm.next()
     await state.update_data(amount=float(message.text))
