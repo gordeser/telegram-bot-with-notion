@@ -1,5 +1,7 @@
 from config import TG_API_TOKEN
 from notion import getAmountOfCurrencies
+from notion import addNewPage
+
 from states.IncomeForm import IncomeForm
 from states.ExpenseForm import ExpenseForm
 from filters.IsCorrectNumber import IsCorrectNumber
@@ -76,6 +78,7 @@ async def process_income_comment(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         await message.reply(
             f"Your data: curr - {data['currency']}, amount - {data['amount']}, comment - {data['comment']}")
+        addNewPage('income', '-', data['currency'], data['amount'], data['comment'])
     await state.finish()
 
 
@@ -120,8 +123,7 @@ async def process_expense_amount_incorrect(message: types.Message):
 async def process_expense_comment(message: types.Message, state: FSMContext):
     await state.update_data(comment=message.text)
     async with state.proxy() as data:
-        await message.reply(
-            f"Your data: curr - {data['currency']}, amount - {data['amount']}, comment - {data['comment']}")
+        addNewPage('expense', data['name'], data['currency'], data['amount'], data['comment'])
     await state.finish()
 
 
