@@ -7,6 +7,7 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import Filter
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -21,6 +22,15 @@ class IncomeForm(StatesGroup):
     currency = State()
     amount = State()
     comment = State()
+
+
+class IsIncorrectNumber(Filter):
+    async def check(self, message: types.Message):
+        try:
+            float(message.text)
+            return False
+        except ValueError:
+            return True
 
 
 @dp.message_handler(commands='start')
@@ -68,6 +78,11 @@ async def process_amount(message: types.Message, state: FSMContext):
     await IncomeForm.next()
     await state.update_data(amount=float(message.text))
     await message.reply("Input any comment (optional)")
+
+
+@dp.message_handler(IsIncorrectNumber(), state=IncomeForm.amount)
+async def process_incorrect_amount(message: types.Message):
+    await message.reply("Incorrect number.\nInput amount of income")
 
 
 @dp.message_handler()
