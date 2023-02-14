@@ -105,6 +105,14 @@ async def process_expense_currency(message: types.Message, state: FSMContext):
 async def process_expense_currency_incorrect(message: types.Message):
     await message.reply("Incorrect currency.\nInput currency (available: CZK, RUB, EUR, USD)")
 
+
+@dp.message_handler(state=ExpenseForm.amount)
+async def process_expense_amount(message: types.Message, state: FSMContext):
+    await ExpenseForm.next()
+    await state.update_data(amount=float(message.text))
+    await message.reply("Input any comment (optional)")
+
+
 @dp.message_handler()
 async def echo(message: types.Message):
     # old style:
