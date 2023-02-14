@@ -21,4 +21,8 @@ def readDatabase():
     return data
 
 
-readDatabase()
+db = readDatabase()
+usd_amount = db['results'][0]['properties']['Remain']['formula']['number']
+rub_amount = db['results'][1]['properties']['Remain']['formula']['number']
+eur_amount = db['results'][2]['properties']['Remain']['formula']['number']
+czk_amount = db['results'][3]['properties']['Remain']['formula']['number']
