@@ -92,6 +92,15 @@ async def process_expense_name(message: types.Message, state: FSMContext):
     await message.reply("Input currency (available: CZK, RUB, EUR, USD)")
 
 
+@dp.message_handler(lambda message: message.text in ['CZK', 'RUB', 'EUR', 'USD'], state=ExpenseForm.currency)
+async def process_expense_currency(message: types.Message, state: FSMContext):
+    await ExpenseForm.next()
+    await state.update_data(currency=message.text)
+    await message.reply("Input amount of expense")
+    async with state.proxy() as data:
+        print(data['name'], data['currency'])
+
+
 @dp.message_handler()
 async def echo(message: types.Message):
     # old style:
