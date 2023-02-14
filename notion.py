@@ -79,4 +79,11 @@ def addNewPage(database, name, currency, amount, comment):
             }
         }
     })
-    requests.request("POST", readUrl, headers=headers, data=data)
+    req = requests.request("POST", readUrl, headers=headers, data=data)
+    return req.json()['id']
+
+
+def deletePage(page_id):
+    url = f"https://api.notion.com/v1/blocks/{page_id}"
+    req = requests.request("DELETE", url, headers=headers)
+    return req
