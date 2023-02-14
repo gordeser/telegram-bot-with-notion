@@ -102,7 +102,7 @@ async def process_expense_currency(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(lambda message: message.text not in ['CZK', 'RUB', 'EUR', 'USD'], state=ExpenseForm.currency)
-async def process_expense_currency_incorrect(message: types.Message, state: FSMContext):
+async def process_expense_currency_incorrect(message: types.Message):
     await message.reply("Incorrect currency.\nInput currency (available: CZK, RUB, EUR, USD)")
 
 @dp.message_handler()
