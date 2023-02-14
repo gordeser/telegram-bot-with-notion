@@ -85,6 +85,12 @@ async def start_expense(message: types.Message):
     await message.reply("Input name of item")
 
 
+@dp.message_handler(state=ExpenseForm.name)
+async def process_expense_name(message: types.Message, state: FSMContext):
+    await ExpenseForm.next()
+    await state.update_data(name=message.text)
+    await message.reply("Input currency (available: CZK, RUB, EUR, USD)")
+
 
 @dp.message_handler()
 async def echo(message: types.Message):
