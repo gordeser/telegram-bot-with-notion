@@ -116,6 +116,14 @@ async def process_expense_amount_incorrect(message: types.Message):
     await message.reply("Incorrect number.\nInput amount of expense")
 
 
+@dp.message_handler(state=ExpenseForm.comment)
+async def process_expense_comment(message: types.Message, state: FSMContext):
+    await state.update_data(comment=message.text)
+    async with state.proxy() as data:
+        await message.reply(
+            f"Your data: curr - {data['currency']}, amount - {data['amount']}, comment - {data['comment']}")
+    await state.finish()
+
 @dp.message_handler()
 async def echo(message: types.Message):
     # old style:
