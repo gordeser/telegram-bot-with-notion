@@ -4,16 +4,25 @@ from notion import getAmountOfCurrencies
 
 import logging
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
 # Initialize bot and dispatcher
 bot = Bot(token=TG_API_TOKEN)
-dp = Dispatcher(bot)
+storage = MemoryStorage()
+dp = Dispatcher(bot, storage=storage)
 
 
-@dp.message_handler(commands=['start'])
+class IncomeForm(StatesGroup):
+    currency = State()
+    amount = State()
+    comment = State()
+
+
+@dp.message_handler(commands='start')
 async def send_welcome(message: types.Message):
     """
     This handler will be called when user sends `/start` command
@@ -21,7 +30,7 @@ async def send_welcome(message: types.Message):
     await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
 
 
-@dp.message_handler(commands=['balance'])
+@dp.message_handler(commands='balance')
 async def show_balance(message: types.Message):
     currencies = getAmountOfCurrencies()
 
@@ -33,6 +42,12 @@ Your balances
 <b>USD</b>: <i>{currencies['USD']:.2f}</i>"""
 
     await message.reply(to_send, parse_mode='html')
+
+
+@dp.message_handler(commands='income')
+async def start_income(message: types.Message):
+    await IncomeForm.currency.set()
+    await message.reply("Input currency (available: CZK, RUB, EUR, USD)")
 
 
 @dp.message_handler()
