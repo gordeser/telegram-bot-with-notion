@@ -85,6 +85,15 @@ async def process_incorrect_amount(message: types.Message):
     await message.reply("Incorrect number.\nInput amount of income")
 
 
+@dp.message_handler(state=IncomeForm.comment)
+async def process_comment(message: types.Message, state: FSMContext):
+    await state.update_data(comment=message.text)
+    async with state.proxy() as data:
+        await message.reply(
+            f"Your data: curr - {data['currency']}, amount - {data['amount']}, comment - {data['comment']}")
+    await state.finish()
+
+
 @dp.message_handler()
 async def echo(message: types.Message):
     # old style:
