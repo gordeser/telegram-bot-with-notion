@@ -127,6 +127,12 @@ async def process_expense_comment(message: types.Message, state: FSMContext):
     await state.finish()
 
 
+@dp.message_handler(commands='del')
+async def delete_last_record(message: types.Message):
+    # todo: add implementation of this function
+    await message.reply("This function is in reconstruction")
+
+
 @dp.message_handler()
 async def echo(message: types.Message):
     # old style:
