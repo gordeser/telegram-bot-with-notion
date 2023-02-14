@@ -1,6 +1,5 @@
 from config import TG_API_TOKEN
-from notion import getAmountOfCurrencies
-from notion import addNewPage
+from notion import getAmountOfCurrencies, addNewPage, deletePage
 
 from states.IncomeForm import IncomeForm
 from states.ExpenseForm import ExpenseForm
@@ -76,9 +75,8 @@ async def process_income_amount_incorrect(message: types.Message):
 async def process_income_comment(message: types.Message, state: FSMContext):
     await state.update_data(comment=message.text)
     async with state.proxy() as data:
-        await message.reply(
-            f"Your data: curr - {data['currency']}, amount - {data['amount']}, comment - {data['comment']}")
-        addNewPage('income', '-', data['currency'], data['amount'], data['comment'])
+        with open("last_added.txt", "w") as f:
+            f.write(addNewPage('income', '-', data['currency'], data['amount'], data['comment']))
     await state.finish()
 
 
@@ -123,14 +121,27 @@ async def process_expense_amount_incorrect(message: types.Message):
 async def process_expense_comment(message: types.Message, state: FSMContext):
     await state.update_data(comment=message.text)
     async with state.proxy() as data:
-        addNewPage('expense', data['name'], data['currency'], data['amount'], data['comment'])
+        with open("last_added.txt", "w") as f:
+            f.write(addNewPage('expense', data['name'], data['currency'], data['amount'], data['comment']))
     await state.finish()
 
 
 @dp.message_handler(commands='del')
 async def delete_last_record(message: types.Message):
-    # todo: add implementation of this function
-    await message.reply("This function is in reconstruction")
+    try:
+        with open("last_added.txt", "r") as f:
+            to_delete = f.readline()
+            if len(to_delete) == 0:
+                raise ValueError
+            await message.reply("Last page has been deleted")
+            deletePage(to_delete)
+
+        with open("last_added.txt", "w") as _:
+            pass
+    except:
+        await message.reply("There is no page to delete")
+
+    # await message.reply("This function is in reconstruction")
 
 
 @dp.message_handler()

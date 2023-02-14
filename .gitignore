@@ -2,3 +2,4 @@ config.py
 .idea
 __pycache__
 full-properties.json
+last_added.txt
