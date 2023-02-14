@@ -10,19 +10,15 @@ headers = {
 }
 
 
-def readDatabase():
+def getAmountOfCurrencies():
     readUrl = f"https://api.notion.com/v1/databases/{DATABASE_ID}/query"
     res = requests.request("POST", readUrl, headers=headers)
     data = res.json()
-    print(res.status_code)
+    currencies = {
+        'USD': data['results'][0]['properties']['Remain']['formula']['number'],
+        'RUB': data['results'][1]['properties']['Remain']['formula']['number'],
+        'EUR': data['results'][2]['properties']['Remain']['formula']['number'],
+        'CZK': data['results'][3]['properties']['Remain']['formula']['number']
+    }
+    return currencies
 
-    with open('./full-properties.json', 'w', encoding='utf8') as f:
-        json.dump(data, f, ensure_ascii=False)
-    return data
-
-
-db = readDatabase()
-usd_amount = db['results'][0]['properties']['Remain']['formula']['number']
-rub_amount = db['results'][1]['properties']['Remain']['formula']['number']
-eur_amount = db['results'][2]['properties']['Remain']['formula']['number']
-czk_amount = db['results'][3]['properties']['Remain']['formula']['number']
