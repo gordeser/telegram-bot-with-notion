@@ -1,4 +1,6 @@
-from config import API_TOKEN
+from config import TG_API_TOKEN
+
+from notion import getAmountOfCurrencies
 
 import logging
 from aiogram import Bot, Dispatcher, executor, types
@@ -7,7 +9,7 @@ from aiogram import Bot, Dispatcher, executor, types
 logging.basicConfig(level=logging.INFO)
 
 # Initialize bot and dispatcher
-bot = Bot(token=API_TOKEN)
+bot = Bot(token=TG_API_TOKEN)
 dp = Dispatcher(bot)
 
 
@@ -21,24 +23,14 @@ async def send_welcome(message: types.Message):
 
 @dp.message_handler(commands=['balance'])
 async def show_balance(message: types.Message):
-    CZK = 120.004343
-    RUB = 456.0054354
-    EUR = 789.32654654
-    USD = 532.55654654
-
-    # balances = {
-    #     'CZK': CZK,
-    #     'RUB': RUB,
-    #     'EUR': EUR,
-    #     'USD': USD
-    # }
+    currencies = getAmountOfCurrencies()
 
     to_send = f"""
 Your balances
-<b>CZK</b>: <i>{CZK:.2f}</i>
-<b>RUB</b>: <i>{RUB:.2f}</i>
-<b>EUR</b>: <i>{EUR:.2f}</i>
-<b>USD</b>: <i>{USD:.2f}</i>"""
+<b>CZK</b>: <i>{currencies['CZK']:.2f}</i>
+<b>RUB</b>: <i>{currencies['RUB']:.2f}</i>
+<b>EUR</b>: <i>{currencies['EUR']:.2f}</i>
+<b>USD</b>: <i>{currencies['USD']:.2f}</i>"""
 
     await message.reply(to_send, parse_mode='html')
 
