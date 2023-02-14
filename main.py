@@ -63,6 +63,13 @@ async def process_invalid_currency(message: types.Message):
     await message.reply("Incorrect currency.\nInput currency (available: CZK, RUB, EUR, USD)")
 
 
+@dp.message_handler(state=IncomeForm.amount)
+async def process_amount(message: types.Message, state: FSMContext):
+    await IncomeForm.next()
+    await state.update_data(amount=float(message.text))
+    await message.reply("Input any comment (optional)")
+
+
 @dp.message_handler()
 async def echo(message: types.Message):
     # old style:
