@@ -1,13 +1,12 @@
 from config import TG_API_TOKEN
-
 from notion import getAmountOfCurrencies
+from states.IncomeForm import IncomeForm
+from filters.IsIncorrectNumber import IsIncorrectNumber
 
 import logging
 from aiogram import Bot, Dispatcher, executor, types
-from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters import Filter
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -16,21 +15,6 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=TG_API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
-
-
-class IncomeForm(StatesGroup):
-    currency = State()
-    amount = State()
-    comment = State()
-
-
-class IsIncorrectNumber(Filter):
-    async def check(self, message: types.Message):
-        try:
-            float(message.text)
-            return False
-        except ValueError:
-            return True
 
 
 @dp.message_handler(commands='start')
