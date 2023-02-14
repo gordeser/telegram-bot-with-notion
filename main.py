@@ -47,31 +47,31 @@ async def start_income(message: types.Message):
 
 
 @dp.message_handler(lambda message: message.text in ['CZK', 'RUB', 'EUR', 'USD'], state=IncomeForm.currency)
-async def process_currency(message: types.Message, state: FSMContext):
+async def process_income_currency(message: types.Message, state: FSMContext):
     await IncomeForm.next()
     await state.update_data(currency=message.text)
     await message.reply("Input amount of income")
 
 
 @dp.message_handler(lambda message: message.text not in ['CZK', 'RUB', 'EUR', 'USD'], state=IncomeForm.currency)
-async def process_invalid_currency(message: types.Message):
+async def process_income_currency_incorrect(message: types.Message):
     await message.reply("Incorrect currency.\nInput currency (available: CZK, RUB, EUR, USD)")
 
 
 @dp.message_handler(IsCorrectNumber(), state=IncomeForm.amount)
-async def process_amount(message: types.Message, state: FSMContext):
+async def process_income_amount(message: types.Message, state: FSMContext):
     await IncomeForm.next()
     await state.update_data(amount=float(message.text))
     await message.reply("Input any comment (optional)")
 
 
 @dp.message_handler(state=IncomeForm.amount)
-async def process_incorrect_amount(message: types.Message):
+async def process_income_amount_incorrect(message: types.Message):
     await message.reply("Incorrect number.\nInput amount of income")
 
 
 @dp.message_handler(state=IncomeForm.comment)
-async def process_comment(message: types.Message, state: FSMContext):
+async def process_income_comment(message: types.Message, state: FSMContext):
     await state.update_data(comment=message.text)
     async with state.proxy() as data:
         await message.reply(
@@ -123,6 +123,7 @@ async def process_expense_comment(message: types.Message, state: FSMContext):
         await message.reply(
             f"Your data: curr - {data['currency']}, amount - {data['amount']}, comment - {data['comment']}")
     await state.finish()
+
 
 @dp.message_handler()
 async def echo(message: types.Message):
