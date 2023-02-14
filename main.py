@@ -111,6 +111,11 @@ async def process_expense_amount(message: types.Message, state: FSMContext):
     await message.reply("Input any comment (optional)")
 
 
+@dp.message_handler(state=ExpenseForm.amount)
+async def process_expense_amount_incorrect(message: types.Message):
+    await message.reply("Incorrect number.\nInput amount of expense")
+
+
 @dp.message_handler()
 async def echo(message: types.Message):
     # old style:
