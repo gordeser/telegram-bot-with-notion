@@ -1,6 +1,7 @@
 from config import TG_API_TOKEN
 from notion import getAmountOfCurrencies
 from states.IncomeForm import IncomeForm
+from states.ExpenseForm import ExpenseForm
 from filters.IsIncorrectNumber import IsIncorrectNumber
 
 import logging
@@ -76,6 +77,13 @@ async def process_comment(message: types.Message, state: FSMContext):
         await message.reply(
             f"Your data: curr - {data['currency']}, amount - {data['amount']}, comment - {data['comment']}")
     await state.finish()
+
+
+@dp.message_handler(commands='expense')
+async def start_expense(message: types.Message):
+    await ExpenseForm.name.set()
+    await message.reply("Input name of item")
+
 
 
 @dp.message_handler()
