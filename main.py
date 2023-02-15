@@ -1,5 +1,5 @@
 from config import TG_API_TOKEN
-from notion import getAmountOfCurrencies, addNewPage, deletePage
+from notion import getAmountOfCurrencies, addNewPage, deletePage, addNewInput
 
 from states.IncomeForm import IncomeForm
 from states.ExpenseForm import ExpenseForm
@@ -142,15 +142,11 @@ async def delete_last_record(message: types.Message):
     except:
         await message.reply("There is no page to delete")
 
-    # await message.reply("This function is in reconstruction")
-
 
 @dp.message_handler()
-async def echo(message: types.Message):
-    # old style:
-    # await bot.send_message(message.chat.id, message.text)
-
-    await message.answer(message.text)
+async def add_input(message: types.Message):
+    addNewInput(message.text)
+    await message.reply("Input has been added")
 
 
 if __name__ == '__main__':
