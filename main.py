@@ -18,6 +18,10 @@ bot = Bot(token=TG_API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
+currency_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+currency_keyboard.add("CZK", "RUB")
+currency_keyboard.add("EUR", "USD")
+
 
 @dp.message_handler(commands='start')
 async def send_welcome(message: types.Message):
@@ -90,18 +94,14 @@ async def start_expense(message: types.Message):
 async def process_expense_name(message: types.Message, state: FSMContext):
     await ExpenseForm.next()
     await state.update_data(name=message.text)
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
-    markup.add("CZK", "RUB")
-    markup.add("EUR", "USD")
-    await message.reply("Choose currency", reply_markup=markup)
+    await message.reply("Choose currency", reply_markup=currency_keyboard)
 
 
 @dp.message_handler(lambda message: message.text in ['CZK', 'RUB', 'EUR', 'USD'], state=ExpenseForm.currency)
 async def process_expense_currency(message: types.Message, state: FSMContext):
     await ExpenseForm.next()
     await state.update_data(currency=message.text)
-    markup = types.ReplyKeyboardRemove()
-    await message.reply("Input amount of expense", reply_markup=markup)
+    await message.reply("Input amount of expense", reply_markup=types.ReplyKeyboardRemove())
 
 
 @dp.message_handler(lambda message: message.text not in ['CZK', 'RUB', 'EUR', 'USD'], state=ExpenseForm.currency)
