@@ -48,19 +48,19 @@ Your balances
 @dp.message_handler(commands='income')
 async def start_income(message: types.Message):
     await IncomeForm.currency.set()
-    await message.reply("Input currency (available: CZK, RUB, EUR, USD)")
+    await message.reply("Choose currency", reply_markup=currency_keyboard)
 
 
 @dp.message_handler(lambda message: message.text in ['CZK', 'RUB', 'EUR', 'USD'], state=IncomeForm.currency)
 async def process_income_currency(message: types.Message, state: FSMContext):
     await IncomeForm.next()
     await state.update_data(currency=message.text)
-    await message.reply("Input amount of income")
+    await message.reply("Input amount of income", reply_markup=types.ReplyKeyboardRemove())
 
 
 @dp.message_handler(lambda message: message.text not in ['CZK', 'RUB', 'EUR', 'USD'], state=IncomeForm.currency)
 async def process_income_currency_incorrect(message: types.Message):
-    await message.reply("Incorrect currency.\nInput currency (available: CZK, RUB, EUR, USD)")
+    await message.reply("Incorrect currency.\nChoose currency")
 
 
 @dp.message_handler(IsCorrectNumber(), state=IncomeForm.amount)
