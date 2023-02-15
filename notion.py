@@ -1,8 +1,6 @@
 from config import NOTION_API_TOKEN, CURRENCY_DATABASE_ID, EXPENSES_DATABASE_ID, CZK_PAGE_ID, RUB_PAGE_ID, EUR_PAGE_ID, \
     USD_PAGE_ID, INCOMES_DATABASE_ID, TASKLIST_DATABASE_ID
 
-from datetime import datetime
-
 import requests
 import json
 
@@ -64,11 +62,6 @@ def addNewPage(database, name, currency, amount, comment):
                 "relation": [{
                     "id": curr
                 }]
-            },
-            "Date": {
-                "date": {
-                    "start": datetime.today().isoformat() + '+01:00'
-                }
             },
             "Comment": {
                 "rich_text": [{
