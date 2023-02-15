@@ -4,6 +4,7 @@ from notion import getAmountOfCurrencies, addNewPage, deletePage
 from states.IncomeForm import IncomeForm
 from states.ExpenseForm import ExpenseForm
 from filters.IsCorrectNumber import IsCorrectNumber
+from keyboards.currency import currency_keyboard
 
 import logging
 from aiogram import Bot, Dispatcher, executor, types
@@ -17,10 +18,6 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=TG_API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
-
-currency_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
-currency_keyboard.add("CZK", "RUB")
-currency_keyboard.add("EUR", "USD")
 
 
 @dp.message_handler(commands='start')
