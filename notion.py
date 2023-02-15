@@ -105,7 +105,6 @@ def addNewInput(text):
         }
     })
     req = requests.request("POST", url, headers=headers, data=data)
-    print(req.text)
     return req.json()['id']
 
 
