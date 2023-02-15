@@ -1,5 +1,5 @@
 from config import NOTION_API_TOKEN, CURRENCY_DATABASE_ID, EXPENSES_DATABASE_ID, CZK_PAGE_ID, RUB_PAGE_ID, EUR_PAGE_ID, \
-    USD_PAGE_ID, INCOMES_DATABASE_ID
+    USD_PAGE_ID, INCOMES_DATABASE_ID, TASKLIST_DATABASE_ID
 
 from datetime import datetime
 
@@ -27,7 +27,7 @@ def getAmountOfCurrencies():
 
 
 def addNewPage(database, name, currency, amount, comment):
-    readUrl = f"https://api.notion.com/v1/pages"
+    readUrl = "https://api.notion.com/v1/pages"
 
     match currency:
         case 'CZK':
@@ -80,6 +80,32 @@ def addNewPage(database, name, currency, amount, comment):
         }
     })
     req = requests.request("POST", readUrl, headers=headers, data=data)
+    return req.json()['id']
+
+
+def addNewInput(text):
+    url = "https://api.notion.com/v1/pages"
+    data = json.dumps({
+        "parent": {
+            "database_id": TASKLIST_DATABASE_ID
+        },
+        "properties": {
+            "Name": {
+                "title": [{
+                    "text": {
+                        "content": text
+                    }
+                }]
+            },
+            "Status": {
+                "select": {
+                    "name": "Inputs"
+                }
+            }
+        }
+    })
+    req = requests.request("POST", url, headers=headers, data=data)
+    print(req.text)
     return req.json()['id']
 
 
