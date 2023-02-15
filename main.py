@@ -158,7 +158,8 @@ async def delete_last_record(message: types.Message):
 
 @dp.message_handler()
 async def add_input(message: types.Message):
-    addNewInput(message.text)
+    with open("last_added.txt", "w") as f:
+        f.write(addNewInput(message.text))
     await message.reply("Input has been added")
 
 
