@@ -10,6 +10,7 @@ import logging
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import Text
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -26,6 +27,18 @@ async def send_welcome(message: types.Message):
     This handler will be called when user sends `/start` command
     """
     await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
+
+
+@dp.message_handler(state='*', commands='cancel')
+@dp.message_handler(Text(equals='cancel', ignore_case=True), state='*')
+async def cancel_state(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is None:
+        return
+
+    logging.info('Cancelling state %r', current_state)
+    await state.finish()
+    await message.reply('Cancelled input.', reply_markup=types.ReplyKeyboardRemove())
 
 
 @dp.message_handler(commands='balance')
