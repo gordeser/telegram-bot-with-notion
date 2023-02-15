@@ -42,6 +42,7 @@ async def cancel_state(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(commands='balance')
+@dp.message_handler(Text(equals='balance', ignore_case=True))
 async def show_balance(message: types.Message):
     currencies = getAmountOfCurrencies()
 
@@ -56,6 +57,7 @@ Your balances
 
 
 @dp.message_handler(commands='income')
+@dp.message_handler(Text(equals='income', ignore_case=True))
 async def start_income(message: types.Message):
     await IncomeForm.currency.set()
     await message.reply("Choose currency", reply_markup=currency_keyboard)
@@ -95,6 +97,7 @@ async def process_income_comment(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(commands='expense')
+@dp.message_handler(Text(equals='expense', ignore_case=True))
 async def start_expense(message: types.Message):
     await ExpenseForm.name.set()
     await message.reply("Input name of item")
@@ -141,6 +144,7 @@ async def process_expense_comment(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(commands='del')
+@dp.message_handler(Text(equals='del', ignore_case=True))
 async def delete_last_record(message: types.Message):
     try:
         with open("last_added.txt", "r") as f:
