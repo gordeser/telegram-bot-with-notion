@@ -92,7 +92,7 @@ async def process_income_comment(message: types.Message, state: FSMContext):
     await state.update_data(comment=message.text)
     async with state.proxy() as data:
         with open("last_added.txt", "w") as f:
-            f.write(addNewPage('income', '-', data['currency'], data['amount'], data['comment']))
+            f.write(addNewPage('income', '', data['currency'], data['amount'], data['comment']))
     await state.finish()
 
 
@@ -139,7 +139,7 @@ async def process_expense_comment(message: types.Message, state: FSMContext):
     await state.update_data(comment=message.text)
     async with state.proxy() as data:
         with open("last_added.txt", "w") as f:
-            f.write(addNewPage('expense', data['name'], data['currency'], data['amount'], data['comment']))
+            f.write(addNewPage('expense', data['name'], data['currency'], data['amount'], data['comment'] if data['comment'] != '-' else ''))
     await state.finish()
 
 
