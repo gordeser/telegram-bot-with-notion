@@ -110,14 +110,14 @@ async def process_expense_name(message: types.Message, state: FSMContext):
     await message.reply("Choose currency", reply_markup=currency_keyboard)
 
 
-@dp.message_handler(lambda message: message.text in ['CZK', 'RUB', 'EUR', 'USD'], state=ExpenseForm.currency)
+@dp.message_handler(lambda message: message.text.upper() in ['CZK', 'RUB', 'EUR', 'USD'], state=ExpenseForm.currency)
 async def process_expense_currency(message: types.Message, state: FSMContext):
     await ExpenseForm.next()
     await state.update_data(currency=message.text)
     await message.reply("Input amount of expense", reply_markup=types.ReplyKeyboardRemove())
 
 
-@dp.message_handler(lambda message: message.text not in ['CZK', 'RUB', 'EUR', 'USD'], state=ExpenseForm.currency)
+@dp.message_handler(lambda message: message.text.upper() not in ['CZK', 'RUB', 'EUR', 'USD'], state=ExpenseForm.currency)
 async def process_expense_currency_incorrect(message: types.Message):
     await message.reply("Incorrect currency.")
 
