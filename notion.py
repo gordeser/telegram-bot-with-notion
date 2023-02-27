@@ -27,6 +27,7 @@ def getAmountOfCurrencies():
 def addNewPage(database, name, currency, amount, comment):
     readUrl = "https://api.notion.com/v1/pages"
 
+    curr = None
     match currency:
         case 'CZK':
             curr = CZK_PAGE_ID
@@ -37,13 +38,16 @@ def addNewPage(database, name, currency, amount, comment):
         case 'USD':
             curr = USD_PAGE_ID
 
+    page = None
+    category = False
     match database:
         case 'expense':
             page = EXPENSES_DATABASE_ID
+            category = True
         case 'income':
             page = INCOMES_DATABASE_ID
 
-    data = json.dumps({
+    data = {
         "parent": {
             "database_id": page
         },
@@ -71,8 +75,17 @@ def addNewPage(database, name, currency, amount, comment):
                 }]
             }
         }
-    })
-    req = requests.request("POST", readUrl, headers=headers, data=data)
+    }
+    if category:
+        to_update = {
+            'Category': {
+                'multi_select': [{
+                    'name': 'Uncategorized'
+                }]
+            }
+        }
+        data['properties'].update(to_update)
+    req = requests.request("POST", readUrl, headers=headers, data=json.dumps(data))
     return req.json()['id']
 
 
