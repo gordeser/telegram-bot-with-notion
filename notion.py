@@ -28,24 +28,22 @@ def addNewPage(database, name, currency, amount, comment):
     readUrl = "https://api.notion.com/v1/pages"
 
     curr = None
-    match currency:
-        case 'CZK':
-            curr = CZK_PAGE_ID
-        case 'RUB':
-            curr = RUB_PAGE_ID
-        case 'EUR':
-            curr = EUR_PAGE_ID
-        case 'USD':
-            curr = USD_PAGE_ID
+    if currency == 'CZK':
+        curr = CZK_PAGE_ID
+    elif currency == 'RUB':
+        curr = RUB_PAGE_ID
+    elif currency == 'EUR':
+        curr = EUR_PAGE_ID
+    elif currency == 'USD':
+        curr = USD_PAGE_ID
 
     page = None
     category = False
-    match database:
-        case 'expense':
-            page = EXPENSES_DATABASE_ID
-            category = True
-        case 'income':
-            page = INCOMES_DATABASE_ID
+    if database == "expense":
+        page = EXPENSES_DATABASE_ID
+        category = True
+    elif database == "income":
+        page = INCOMES_DATABASE_ID
 
     data = {
         "parent": {
