@@ -12,15 +12,19 @@ headers = {
 
 
 def getAmountOfCurrencies():
-    readUrl = f"https://api.notion.com/v1/databases/{CURRENCY_DATABASE_ID}/query"
-    res = requests.request("POST", readUrl, headers=headers)
-    data = res.json()
+    def getCurrencyRemain(currency):
+        readUrl = f"https://api.notion.com/v1/pages/{currency}/properties/eue%7C"
+        res = requests.request("GET", readUrl, headers=headers)
+        data = res.json()
+        return data['formula']['number']
+
     currencies = {
-        'USD': data['results'][0]['properties']['Remain']['formula']['number'],
-        'RUB': data['results'][1]['properties']['Remain']['formula']['number'],
-        'EUR': data['results'][2]['properties']['Remain']['formula']['number'],
-        'CZK': data['results'][3]['properties']['Remain']['formula']['number']
+        'USD': getCurrencyRemain(USD_PAGE_ID),
+        'RUB': getCurrencyRemain(RUB_PAGE_ID),
+        'EUR': getCurrencyRemain(EUR_PAGE_ID),
+        'CZK': getCurrencyRemain(CZK_PAGE_ID)
     }
+
     return currencies
 
 
